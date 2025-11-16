@@ -1,17 +1,17 @@
-
 import React, { useState } from 'react';
-import { Quiz, ExplanationStyle } from '../types';
+import { Quiz, ExplanationStyle, Project } from '../types';
 import { generateQuiz, getExplanation } from '../services/geminiService';
 import { Modal } from './Modal';
 
 interface LearningHubProps {
-    projectContext: string;
+    projects: Project[];
 }
 
-export const LearningHub: React.FC<LearningHubProps> = ({ projectContext }) => {
+export const LearningHub: React.FC<LearningHubProps> = ({ projects }) => {
     const [isQuizModalOpen, setQuizModalOpen] = useState(false);
     const [isExplanationModalOpen, setExplanationModalOpen] = useState(false);
 
+    const [quizProjectId, setQuizProjectId] = useState<number | null>(projects.length > 0 ? projects[0].id : null);
     const [quiz, setQuiz] = useState<Quiz | null>(null);
     const [isQuizLoading, setQuizLoading] = useState(false);
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
@@ -23,10 +23,15 @@ export const LearningHub: React.FC<LearningHubProps> = ({ projectContext }) => {
     const [isExplanationLoading, setExplanationLoading] = useState(false);
 
     const handleGenerateQuiz = async () => {
+        if (!quizProjectId) return;
+        
+        const projectForQuiz = projects.find(p => p.id === quizProjectId);
+        if (!projectForQuiz) return;
+        
         setQuizLoading(true);
         setShowQuizResults(false);
         setSelectedAnswers({});
-        const newQuiz = await generateQuiz(projectContext);
+        const newQuiz = await generateQuiz(projectForQuiz.description);
         setQuiz(newQuiz);
         setQuizLoading(false);
     };
@@ -51,19 +56,43 @@ export const LearningHub: React.FC<LearningHubProps> = ({ projectContext }) => {
             <h1 className="text-4xl font-bold">Learning Hub</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* AI Quiz Generator */}
-                <div className="bg-gray-800 p-6 rounded-lg">
+                <div className="bg-gray-800 p-6 rounded-lg flex flex-col">
                     <h2 className="text-xl font-semibold">AI Quiz Generator</h2>
-                    <p className="text-gray-400 mt-2 mb-4">Generate quizzes from your active project's context to test your team's knowledge.</p>
-                    <button onClick={() => { handleGenerateQuiz(); setQuizModalOpen(true); }} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
-                        Generate Quiz
-                    </button>
+                    <p className="text-gray-400 mt-2 mb-4 flex-grow">Generate quizzes based on a project's context to test your team's knowledge.</p>
+                    <div className="space-y-4">
+                        <div>
+                            <label htmlFor="quiz-project-select" className="block text-sm font-medium text-gray-300 mb-2">
+                                Select a project to generate a quiz:
+                            </label>
+                            <select
+                                id="quiz-project-select"
+                                value={quizProjectId ?? ''}
+                                onChange={(e) => setQuizProjectId(Number(e.target.value))}
+                                disabled={projects.length === 0}
+                                className="w-full bg-gray-700 p-3 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+                                {projects.length === 0 ? (
+                                    <option>No projects available</option>
+                                ) : (
+                                    projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)
+                                )}
+                            </select>
+                        </div>
+                        <button
+                            onClick={() => { handleGenerateQuiz(); setQuizModalOpen(true); }}
+                            disabled={!quizProjectId}
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg disabled:bg-gray-500 disabled:cursor-not-allowed"
+                        >
+                            Generate Quiz
+                        </button>
+                    </div>
                 </div>
 
                 {/* Explain Like I'm... */}
-                <div className="bg-gray-800 p-6 rounded-lg">
+                <div className="bg-gray-800 p-6 rounded-lg flex flex-col">
                     <h2 className="text-xl font-semibold">Explain Like I'm...</h2>
-                    <p className="text-gray-400 mt-2 mb-4">Get explanations on complex topics, tailored to your preferred learning style.</p>
-                    <button onClick={() => setExplanationModalOpen(true)} className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg">
+                    <p className="text-gray-400 mt-2 mb-4 flex-grow">Get explanations on complex topics, tailored to your preferred learning style.</p>
+                    <button onClick={() => setExplanationModalOpen(true)} className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg">
                         Get Explanation
                     </button>
                 </div>

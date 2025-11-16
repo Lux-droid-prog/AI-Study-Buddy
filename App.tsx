@@ -10,6 +10,7 @@ import { Achievements } from './components/Achievements';
 import { Timeline } from './components/Timeline';
 import { Team } from './components/Team';
 import { Performance } from './components/Performance';
+import { FocusMode } from './components/FocusMode';
 import { Page, Project, Task, TeamMember, Mood, SkillProfile, Achievement, ChatMessage, Quiz, ExplanationStyle } from './types';
 
 import { 
@@ -91,13 +92,15 @@ const App: React.FC = () => {
             case Page.Timeline:
                  return <Timeline projects={projects} />;
             case Page.LearningHub:
-                return <LearningHub projectContext={selectedProject?.description || ''} />;
+                return <LearningHub projects={projects} />;
             case Page.Presentations:
                 return <Presentations projects={projects} selectedProject={selectedProject}/>;
             case Page.Achievements:
                 return <Achievements achievements={achievements} projects={projects} />;
             case Page.Performance:
                 return <Performance tasks={tasks} teamMembers={teamMembers} />;
+            case Page.FocusMode:
+                return <FocusMode teamMembers={teamMembers} />;
             default:
                 return <Dashboard projects={projects} tasks={tasks} teamMembers={teamMembers} onNavigate={setCurrentPage} />;
         }

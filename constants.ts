@@ -28,6 +28,7 @@ export const TASKS_DATA: Task[] = [
     { id: 401, projectId: 4, title: "Define Grading Rubric Schema", assignee: "Lakshiya", status: "Todo", due: "2025-04-15" },
     { id: 402, projectId: 4, title: "Develop Submission Parsing Module", assignee: "Sravya", status: "Todo", due: "2025-04-20" },
     { id: 403, projectId: 4, title: "Implement Frontend for Grade Display", assignee: "Amrutha", status: "Todo", due: "2025-04-25" },
+    { id: 404, projectId: 4, title: "Review Automated Grading Accuracy", assignee: "Lakshiya", status: "Todo", due: "2025-04-28" },
 ];
 
 export const TEAM_MEMBERS_DATA: TeamMember[] = [
@@ -158,6 +159,16 @@ export const TrendingUpIcon = (props: React.SVGProps<SVGSVGElement>) => (
         React.createElement('polyline', { points: "16 7 22 7 22 13" })
     )
 );
+
+export const TimerIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: "24", height: "24", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", ...props },
+        React.createElement('line', { x1: "10", y1: "2", x2: "14", y2: "2" }),
+        React.createElement('path', { d: "M12 22v-4" }),
+        React.createElement('path', { d: "M17.3 3.7a10 10 0 1 1-10.6 0" }),
+        React.createElement('path', { d: "M12 8v4l2 2" })
+    )
+);
+
 
 // FIX: Replaced JSX with React.createElement to be compatible with .ts file extension.
 export const Logo = (props: React.SVGProps<SVGSVGElement>) => (
