@@ -5,6 +5,7 @@ export const PROJECTS_DATA: Project[] = [
     { id: 1, name: "AI Research Initiative", description: "Develop a novel NLP model for sentiment analysis on financial news.", start: "2025-01-05", end: "2025-02-28", score: 72 },
     { id: 2, name: "Robotics Arm Project", description: "Build and program a line-following robot for warehouse automation.", start: "2025-01-15", end: "2025-03-10", score: 85 },
     { id: 3, name: "Project Test", description: "A test project with editable tasks.", start: "2025-03-01", end: "2025-04-01", score: 0 },
+    { id: 4, name: "Student Grading Project", description: "A project to develop a system for automated student grading.", start: "2025-04-10", end: "2025-05-15", score: 0 },
 ];
 
 export const TASKS_DATA: Task[] = [
@@ -21,10 +22,10 @@ export const TASKS_DATA: Task[] = [
 ];
 
 export const TEAM_MEMBERS_DATA: TeamMember[] = [
-    { id: "u1", name: "Ava" },
-    { id: "u2", name: "Ben" },
-    { id: "u3", name: "Cara" },
-    { id: "u4", name: "Diego" },
+    { id: "u1", name: "Ava", email: "ava@example.com", course: "Computer Science", major: "AI & Machine Learning" },
+    { id: "u2", name: "Ben", email: "ben@example.com", course: "Computer Science", major: "Software Engineering" },
+    { id: "u3", name: "Cara", email: "cara@example.com", course: "Mechanical Engineering", major: "Robotics" },
+    { id: "u4", name: "Diego", email: "diego@example.com", course: "Business Administration", major: "Project Management" },
 ];
 
 export const MOOD_DATA: Mood[] = [

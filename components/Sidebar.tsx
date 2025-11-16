@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Page } from '../types';
 import { 
     HomeIcon, GroupIcon, FileTextIcon, TimelineIcon, 
-    BrainCircuitIcon, PresentationIcon, AwardIcon, LogOutIcon, Logo 
+    BrainCircuitIcon, PresentationIcon, AwardIcon, LogOutIcon, Logo, UserIcon
 } from '../constants';
 
 interface SidebarProps {
@@ -40,6 +39,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPage, onNavigate, onLog
         { icon: HomeIcon, label: 'Dashboard', page: Page.Dashboard },
         { icon: GroupIcon, label: 'Projects', page: Page.Projects },
         { icon: FileTextIcon, label: 'Collaboration', page: Page.Collaboration },
+        { icon: UserIcon, label: 'Team', page: Page.Team },
         { icon: TimelineIcon, label: 'Timeline', page: Page.Timeline },
         { icon: BrainCircuitIcon, label: 'Learning Hub', page: Page.LearningHub },
         { icon: PresentationIcon, label: 'Presentations', page: Page.Presentations },

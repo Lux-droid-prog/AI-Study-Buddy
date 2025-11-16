@@ -3,6 +3,7 @@ export enum Page {
     Dashboard = 'dashboard',
     Projects = 'projects',
     Collaboration = 'collaboration',
+    Team = 'team',
     Timeline = 'timeline',
     LearningHub = 'learning-hub',
     Presentations = 'presentations',
@@ -30,6 +31,9 @@ export interface Task {
 export interface TeamMember {
     id: string;
     name: string;
+    email: string;
+    course: string;
+    major: string;
 }
 
 export interface Mood {

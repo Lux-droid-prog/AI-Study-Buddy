@@ -42,7 +42,8 @@ const TaskBoard: React.FC<{
     tasks: Task[];
     teamMembers: TeamMember[];
     setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
-}> = ({ tasks, teamMembers, setTasks }) => {
+    onOpenCreateModal: () => void;
+}> = ({ tasks, teamMembers, setTasks, onOpenCreateModal }) => {
     const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
     const [editedTaskData, setEditedTaskData] = useState<Partial<Task>>({});
 
@@ -71,7 +72,15 @@ const TaskBoard: React.FC<{
 
     return (
     <div className="bg-gray-800 p-6 rounded-lg mt-6">
-        <h2 className="text-xl font-semibold mb-4">Task Board</h2>
+        <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Task Board</h2>
+            <button 
+                onClick={onOpenCreateModal}
+                className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-3 rounded-lg text-sm"
+            >
+                Create New Task
+            </button>
+        </div>
         {tasks.length > 0 ? (
             <div className="overflow-x-auto">
                 <table className="w-full text-left">
@@ -189,6 +198,14 @@ const AIChat: React.FC<{
     );
 };
 
+const emptyTaskState: Omit<Task, 'id'> = {
+    projectId: 0,
+    title: '',
+    assignee: '',
+    status: 'Todo',
+    due: '',
+};
+
 export const Projects: React.FC<ProjectsProps> = ({ 
     projects, tasks, setTasks, teamMembers, chatMessages, setChatMessages, 
     selectedProjectId, setSelectedProjectId, onNavigate, onCreateProject
@@ -199,6 +216,9 @@ export const Projects: React.FC<ProjectsProps> = ({
     const [newProjectStart, setNewProjectStart] = useState('');
     const [newProjectEnd, setNewProjectEnd] = useState('');
     const [isChatLoading, setChatLoading] = useState(false);
+    
+    const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
+    const [newTaskData, setNewTaskData] = useState<Omit<Task, 'id'>>(emptyTaskState);
 
     const handleSendMessage = async (message: string) => {
         const userMessage: ChatMessage = { sender: 'user', text: message };
@@ -231,6 +251,44 @@ export const Projects: React.FC<ProjectsProps> = ({
             setNewProjectEnd('');
         }
     };
+
+    const handleOpenCreateTaskModal = () => {
+        if (!selectedProjectId) return;
+        setNewTaskData({
+            projectId: selectedProjectId,
+            title: '',
+            assignee: teamMembers.length > 0 ? teamMembers[0].name : '',
+            status: 'Todo',
+            due: new Date().toISOString().split('T')[0],
+        });
+        setCreateTaskModalOpen(true);
+    };
+
+    const handleCloseCreateTaskModal = () => {
+        setCreateTaskModalOpen(false);
+        setNewTaskData(emptyTaskState);
+    };
+
+    const handleTaskInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setNewTaskData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleCreateTask = () => {
+        if (!newTaskData.title || !newTaskData.projectId || !newTaskData.assignee || !newTaskData.due) {
+            console.error("All fields are required");
+            return;
+        }
+
+        const newTask: Task = {
+            id: Date.now(),
+            ...newTaskData,
+        };
+        
+        setTasks(prev => [...prev, newTask].sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime()));
+        handleCloseCreateTaskModal();
+    };
+
 
     const selectedProject = projects.find(p => p.id === selectedProjectId);
     const selectedProjectTasks = tasks.filter(t => t.projectId === selectedProjectId);
@@ -272,7 +330,7 @@ export const Projects: React.FC<ProjectsProps> = ({
                 <div>
                     <h2 className="text-3xl font-bold">{selectedProject.name}</h2>
                     <p className="text-gray-400 mt-1">{selectedProject.description}</p>
-                    <TaskBoard tasks={selectedProjectTasks} teamMembers={teamMembers} setTasks={setTasks} />
+                    <TaskBoard tasks={selectedProjectTasks} teamMembers={teamMembers} setTasks={setTasks} onOpenCreateModal={handleOpenCreateTaskModal} />
                 </div>
             )}
             
@@ -285,6 +343,38 @@ export const Projects: React.FC<ProjectsProps> = ({
                         <input type="date" placeholder="End Date" value={newProjectEnd} onChange={e => setNewProjectEnd(e.target.value)} className="w-full bg-gray-700 p-2 rounded text-white" />
                      </div>
                      <button onClick={handleCreateProjectSubmit} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Create</button>
+                </div>
+            </Modal>
+            
+            <Modal isOpen={isCreateTaskModalOpen} onClose={handleCloseCreateTaskModal} title="Create New Task">
+                <div className="space-y-4">
+                     <div>
+                        <label htmlFor="task-title" className="block text-sm font-medium text-gray-300 mb-1">Task Title</label>
+                        <input id="task-title" type="text" name="title" placeholder="e.g., Literature Review" value={newTaskData.title} onChange={handleTaskInputChange} className="w-full bg-gray-700 p-2 rounded text-white" />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label htmlFor="assignee-select" className="block text-sm font-medium text-gray-300 mb-1">Assignee</label>
+                             <select id="assignee-select" name="assignee" value={newTaskData.assignee} onChange={handleTaskInputChange} className="w-full bg-gray-700 p-2 rounded text-white">
+                                {teamMembers.map(member => <option key={member.id} value={member.name}>{member.name}</option>)}
+                            </select>
+                        </div>
+                        <div>
+                            <label htmlFor="status-select" className="block text-sm font-medium text-gray-300 mb-1">Status</label>
+                             <select id="status-select" name="status" value={newTaskData.status} onChange={handleTaskInputChange} className="w-full bg-gray-700 p-2 rounded text-white">
+                                <option value="Todo">Todo</option>
+                                <option value="In progress">In progress</option>
+                                <option value="Done">Done</option>
+                            </select>
+                        </div>
+                    </div>
+                     <div>
+                        <label htmlFor="due-date" className="block text-sm font-medium text-gray-300 mb-1">Due Date</label>
+                        <input id="due-date" type="date" name="due" value={newTaskData.due} onChange={handleTaskInputChange} className="w-full bg-gray-700 p-2 rounded text-white" />
+                    </div>
+                     <button onClick={handleCreateTask} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg mt-2">
+                        Create Task
+                    </button>
                 </div>
             </Modal>
         </div>

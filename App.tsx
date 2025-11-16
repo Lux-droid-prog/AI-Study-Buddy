@@ -8,6 +8,7 @@ import { LearningHub } from './components/LearningHub';
 import { Presentations } from './components/Presentations';
 import { Achievements } from './components/Achievements';
 import { Timeline } from './components/Timeline';
+import { Team } from './components/Team';
 import { Page, Project, Task, TeamMember, Mood, SkillProfile, Achievement, ChatMessage, Quiz, ExplanationStyle } from './types';
 
 import { 
@@ -24,7 +25,7 @@ const App: React.FC = () => {
     // Mock Data State
     const [projects, setProjects] = useState<Project[]>(PROJECTS_DATA);
     const [tasks, setTasks] = useState<Task[]>(TASKS_DATA);
-    const [teamMembers] = useState<TeamMember[]>(TEAM_MEMBERS_DATA);
+    const [teamMembers, setTeamMembers] = useState<TeamMember[]>(TEAM_MEMBERS_DATA);
     const [moods] = useState<Mood[]>(MOOD_DATA);
     const [skillProfiles] = useState<Record<string, SkillProfile>>(SKILL_PROFILES_DATA);
     const [achievements] = useState<Achievement[]>(ACHIEVEMENTS_DATA);
@@ -76,6 +77,11 @@ const App: React.FC = () => {
                 return <Collaboration 
                     moods={moods} 
                     skillProfiles={skillProfiles}
+                />;
+            case Page.Team:
+                return <Team
+                    teamMembers={teamMembers}
+                    setTeamMembers={setTeamMembers}
                 />;
             case Page.Timeline:
                  return <Timeline projects={projects} />;
