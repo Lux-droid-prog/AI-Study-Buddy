@@ -9,6 +9,7 @@ import { Presentations } from './components/Presentations';
 import { Achievements } from './components/Achievements';
 import { Timeline } from './components/Timeline';
 import { Team } from './components/Team';
+import { Performance } from './components/Performance';
 import { Page, Project, Task, TeamMember, Mood, SkillProfile, Achievement, ChatMessage, Quiz, ExplanationStyle } from './types';
 
 import { 
@@ -77,6 +78,10 @@ const App: React.FC = () => {
                 return <Collaboration 
                     moods={moods} 
                     skillProfiles={skillProfiles}
+                    projects={projects}
+                    tasks={tasks}
+                    teamMembers={teamMembers}
+                    selectedProjectId={selectedProjectId}
                 />;
             case Page.Team:
                 return <Team
@@ -91,6 +96,8 @@ const App: React.FC = () => {
                 return <Presentations projects={projects} selectedProject={selectedProject}/>;
             case Page.Achievements:
                 return <Achievements achievements={achievements} projects={projects} />;
+            case Page.Performance:
+                return <Performance tasks={tasks} teamMembers={teamMembers} />;
             default:
                 return <Dashboard projects={projects} tasks={tasks} teamMembers={teamMembers} onNavigate={setCurrentPage} />;
         }

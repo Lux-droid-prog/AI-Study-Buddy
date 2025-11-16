@@ -1,6 +1,6 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { Quiz, ExplanationStyle, PresentationSlide } from '../types';
+import { Quiz, ExplanationStyle, PresentationSlide, Task } from '../types';
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
 
@@ -159,5 +159,25 @@ export const mediateConflict = async (conversation: string): Promise<{ analysis:
     } catch (error) {
         console.error("Error mediating conflict:", error);
         return { analysis: "Error analyzing conversation.", suggestion: "Please check the input and try again." };
+    }
+};
+
+export const summarizeContributions = async (memberName: string, tasks: Task[]): Promise<string> => {
+    if (tasks.length === 0) {
+        return `${memberName} has no tasks assigned.`;
+    }
+
+    const taskSummary = tasks.map(t => `- "${t.title}" (Status: ${t.status})`).join('\n');
+    const prompt = `Analyze the task list for team member "${memberName}" and provide a brief, one-paragraph summary of their workload and contributions. Focus on completed tasks and current efforts. Be encouraging and constructive. Task list:\n${taskSummary}`;
+
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+        });
+        return response.text;
+    } catch (error) {
+        console.error("Error summarizing contributions:", error);
+        return "Could not generate contribution summary.";
     }
 };

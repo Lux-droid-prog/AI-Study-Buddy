@@ -8,6 +8,7 @@ export enum Page {
     LearningHub = 'learning-hub',
     Presentations = 'presentations',
     Achievements = 'achievements',
+    Performance = 'performance',
 }
 
 export interface Project {

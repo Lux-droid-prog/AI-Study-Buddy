@@ -9,43 +9,48 @@ export const PROJECTS_DATA: Project[] = [
 ];
 
 export const TASKS_DATA: Task[] = [
-    { id: 101, projectId: 1, title: "Data acquisition and cleanup", assignee: "Ava", status: "In progress", due: "2025-01-20" },
-    { id: 102, projectId: 1, title: "Establish baseline model architecture", assignee: "Ben", status: "Todo", due: "2025-01-25" },
-    { id: 103, projectId: 1, title: "Literature Review on Transformers", assignee: "Ava", status: "Done", due: "2025-01-15" },
-    { id: 201, projectId: 2, title: "Design chassis in CAD software", assignee: "Cara", status: "Done", due: "2025-01-18" },
-    { id: 202, projectId: 2, title: "Source and order electronic components", assignee: "Diego", status: "In progress", due: "2025-01-22" },
-    { id: 301, projectId: 3, title: "Editable Task 1", assignee: "Ava", status: "Todo", due: "2025-03-05" },
-    { id: 302, projectId: 3, title: "Editable Task 2", assignee: "Ben", status: "Todo", due: "2025-03-10" },
-    { id: 303, projectId: 3, title: "Editable Task 3", assignee: "Cara", status: "In progress", due: "2025-03-15" },
-    { id: 304, projectId: 3, title: "Editable Task 4", assignee: "Diego", status: "Done", due: "2025-03-20" },
-    { id: 305, projectId: 3, title: "Editable Task 5", assignee: "Ava", status: "Todo", due: "2025-03-25" },
+    // Project 1: AI Research Initiative
+    { id: 101, projectId: 1, title: "Literature Review on NLP Models", assignee: "Lakshiya", status: "In progress", due: "2025-01-20" },
+    { id: 102, projectId: 1, title: "Setup Development Environment", assignee: "Sravya", status: "Todo", due: "2025-01-22" },
+    { id: 103, projectId: 1, title: "Prepare Initial Dataset", assignee: "Amrutha", status: "Todo", due: "2025-01-25" },
+
+    // Project 2: Robotics Arm Project
+    { id: 201, projectId: 2, title: "Design Arm Gripper in CAD", assignee: "Lakshiya", status: "Done", due: "2025-01-18" },
+    { id: 202, projectId: 2, title: "Write Motor Control Logic", assignee: "Sravya", status: "In progress", due: "2025-02-05" },
+    { id: 203, projectId: 2, title: "Assemble the Robotic Arm", assignee: "Amrutha", status: "Todo", due: "2025-02-10" },
+
+    // Project 3: Project Test
+    { id: 301, projectId: 3, title: "Create User Stories", assignee: "Lakshiya", status: "Todo", due: "2025-03-05" },
+    { id: 302, projectId: 3, title: "Develop API Endpoints", assignee: "Sravya", status: "Todo", due: "2025-03-10" },
+    { id: 303, projectId: 3, title: "Design UI Mockups", assignee: "Amrutha", status: "In progress", due: "2025-03-15" },
+
+    // Project 4: Student Grading Project
+    { id: 401, projectId: 4, title: "Define Grading Rubric Schema", assignee: "Lakshiya", status: "Todo", due: "2025-04-15" },
+    { id: 402, projectId: 4, title: "Develop Submission Parsing Module", assignee: "Sravya", status: "Todo", due: "2025-04-20" },
+    { id: 403, projectId: 4, title: "Implement Frontend for Grade Display", assignee: "Amrutha", status: "Todo", due: "2025-04-25" },
 ];
 
 export const TEAM_MEMBERS_DATA: TeamMember[] = [
     { id: "u1", name: "Lakshiya", email: "lakshiya@example.com", course: "Computer Science", major: "AI & Machine Learning" },
     { id: "u2", name: "Sravya", email: "sravya@example.com", course: "Computer Science", major: "Software Engineering" },
     { id: "u3", name: "Amrutha", email: "amrutha@example.com", course: "Mechanical Engineering", major: "Robotics" },
-    { id: "u4", name: "Diego", email: "diego@example.com", course: "Business Administration", major: "Project Management" },
 ];
 
 export const MOOD_DATA: Mood[] = [
-    { member: "Ava", mood: "🙂", energy: 7, note: "Feeling productive after finishing the literature review." },
-    { member: "Ben", mood: "😓", energy: 4, note: "A bit overloaded with the new model architecture." },
-    { member: "Cara", mood: "😎", energy: 8, note: "Chassis design was a breeze, ready for the next challenge." },
-    { member: "Diego", mood: "🤔", energy: 6, note: "Thinking about the best component suppliers." }
+    { member: "Lakshiya", mood: "🙂", energy: 7, note: "Feeling productive after finishing the literature review." },
+    { member: "Sravya", mood: "😓", energy: 4, note: "A bit overloaded with the new model architecture." },
+    { member: "Amrutha", mood: "😎", energy: 8, note: "Chassis design was a breeze, ready for the next challenge." },
 ];
 
 export const SKILL_PROFILES_DATA: Record<string, SkillProfile> = {
-    "Ava": { strengths: ["Research", "Academic Writing", "Data Analysis"], role: "Lead Researcher" },
-    "Ben": { strengths: ["Python", "Machine Learning", "PyTorch"], role: "ML Engineer" },
-    "Cara": { strengths: ["3D Modeling", "CAD/CAM", "Mechanical Design"], role: "Hardware Designer" },
-    "Diego": { strengths: ["Logistics", "Project Planning", "Communication"], role: "Project Coordinator" },
+    "Lakshiya": { strengths: ["Research", "Academic Writing", "Data Analysis"], role: "Lead Researcher" },
+    "Sravya": { strengths: ["Python", "Machine Learning", "PyTorch"], role: "ML Engineer" },
+    "Amrutha": { strengths: ["3D Modeling", "CAD/CAM", "Mechanical Design"], role: "Hardware Designer" },
 };
 
 export const ACHIEVEMENTS_DATA: Achievement[] = [
-    { badge: "Fast Finisher", owner: "Ava" },
-    { badge: "The Motivator", owner: "Diego" },
-    { badge: "Creative Mind", owner: "Cara" },
+    { badge: "Fast Finisher", owner: "Lakshiya" },
+    { badge: "Creative Mind", owner: "Amrutha" },
 ];
 
 export const CHAT_MESSAGES_DATA: ChatMessage[] = [
@@ -143,6 +148,14 @@ export const LogOutIcon = (props: React.SVGProps<SVGSVGElement>) => (
         React.createElement('path', { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" }),
         React.createElement('polyline', { points: "16 17 21 12 16 7" }),
         React.createElement('line', { x1: "21", y1: "12", x2: "9", y2: "12" })
+    )
+);
+
+// FIX: Replaced JSX with React.createElement to be compatible with .ts file extension.
+export const TrendingUpIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: "24", height: "24", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", ...props },
+        React.createElement('polyline', { points: "22 7 13.5 15.5 8.5 10.5 2 17" }),
+        React.createElement('polyline', { points: "16 7 22 7 22 13" })
     )
 );
 
