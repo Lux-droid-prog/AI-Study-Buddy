@@ -22,9 +22,9 @@ export const TASKS_DATA: Task[] = [
 ];
 
 export const TEAM_MEMBERS_DATA: TeamMember[] = [
-    { id: "u1", name: "Ava", email: "ava@example.com", course: "Computer Science", major: "AI & Machine Learning" },
-    { id: "u2", name: "Ben", email: "ben@example.com", course: "Computer Science", major: "Software Engineering" },
-    { id: "u3", name: "Cara", email: "cara@example.com", course: "Mechanical Engineering", major: "Robotics" },
+    { id: "u1", name: "Lakshiya", email: "lakshiya@example.com", course: "Computer Science", major: "AI & Machine Learning" },
+    { id: "u2", name: "Sravya", email: "sravya@example.com", course: "Computer Science", major: "Software Engineering" },
+    { id: "u3", name: "Amrutha", email: "amrutha@example.com", course: "Mechanical Engineering", major: "Robotics" },
     { id: "u4", name: "Diego", email: "diego@example.com", course: "Business Administration", major: "Project Management" },
 ];
 
