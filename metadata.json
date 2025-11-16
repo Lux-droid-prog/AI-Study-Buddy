@@ -1,0 +1,5 @@
+{
+  "name": "AI Study Buddy Platform",
+  "description": "An AI-powered collaborative learning platform designed to enhance group projects. It features an AI assistant for project management, learning tools like quiz and presentation generators, and team dynamic analyzers to foster effective collaboration.",
+  "requestFramePermissions": []
+}
