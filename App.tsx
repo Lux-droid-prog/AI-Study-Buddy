@@ -3,7 +3,7 @@ import { Sidebar } from './components/Sidebar';
 import { Login } from './components/Login';
 import { Dashboard } from './components/Dashboard';
 import { Projects } from './components/Projects';
-import { Collaboration } from './components/Collaboration';
+import { Collaboration, Whiteboard } from './components/Collaboration';
 import { LearningHub } from './components/LearningHub';
 import { Presentations } from './components/Presentations';
 import { Achievements } from './components/Achievements';
@@ -101,6 +101,8 @@ const App: React.FC = () => {
                 return <Performance tasks={tasks} teamMembers={teamMembers} />;
             case Page.FocusMode:
                 return <FocusMode teamMembers={teamMembers} />;
+            case Page.Whiteboard:
+                return <Whiteboard teamMembers={teamMembers} />;
             default:
                 return <Dashboard projects={projects} tasks={tasks} teamMembers={teamMembers} onNavigate={setCurrentPage} />;
         }

@@ -2,7 +2,7 @@ import React from 'react';
 import { Page } from '../types';
 import { 
     HomeIcon, GroupIcon, FileTextIcon, TimelineIcon, 
-    BrainCircuitIcon, PresentationIcon, AwardIcon, LogOutIcon, Logo, UserIcon, TrendingUpIcon, TimerIcon
+    BrainCircuitIcon, PresentationIcon, AwardIcon, LogOutIcon, Logo, UserIcon, TrendingUpIcon, TimerIcon, WhiteboardIcon
 } from '../constants';
 
 interface SidebarProps {
@@ -46,6 +46,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPage, onNavigate, onLog
         { icon: AwardIcon, label: 'Achievements', page: Page.Achievements },
         { icon: TrendingUpIcon, label: 'Performance', page: Page.Performance },
         { icon: TimerIcon, label: 'Focus Mode', page: Page.FocusMode },
+        { icon: WhiteboardIcon, label: 'Whiteboard', page: Page.Whiteboard },
     ];
 
     return (

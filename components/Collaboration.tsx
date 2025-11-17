@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Mood, SkillProfile, Project, Task, TeamMember } from '../types';
 import { analyzeTeamMood, mediateConflict } from '../services/geminiService';
+import { WhiteboardIcon, EraserIcon } from '../constants';
+
 
 interface CollaborationProps {
     moods: Mood[];
@@ -173,6 +175,244 @@ export const Collaboration: React.FC<CollaborationProps> = ({ moods, skillProfil
                     </div>
                 </div>
             )}
+        </div>
+    );
+};
+
+
+// --- START OF NEW WHITEBOARD CODE ---
+
+// Sub-component for the toolbar on the left
+const Toolbar: React.FC<{
+    color: string;
+    setColor: (color: string) => void;
+    size: number;
+    setSize: (size: number) => void;
+    tool: 'pen' | 'eraser';
+    setTool: (tool: 'pen' | 'eraser') => void;
+    clearCanvas: () => void;
+}> = ({ color, setColor, size, setSize, tool, setTool, clearCanvas }) => {
+    const colors = ['#FFFFFF', '#3b82f6', '#ef4444', '#22c55e', '#f97316', '#facc15'];
+    const sizes = [2, 5, 10, 20];
+
+    return (
+        <div className="w-24 bg-gray-800 rounded-lg p-4 flex flex-col items-center shadow-lg">
+            <h3 className="text-sm font-semibold mb-4 text-gray-300">Color</h3>
+            <div className="grid grid-cols-2 gap-2 mb-6">
+                {colors.map((c) => (
+                    <button
+                        key={c}
+                        onClick={() => setColor(c)}
+                        className={`w-8 h-8 rounded-full transition-transform duration-150 ${color === c ? 'ring-2 ring-offset-2 ring-offset-gray-800 ring-white scale-110' : ''}`}
+                        style={{ backgroundColor: c }}
+                        aria-label={`Select color ${c}`}
+                    />
+                ))}
+            </div>
+            <h3 className="text-sm font-semibold mb-4 text-gray-300">Size</h3>
+            <div className="space-y-3 mb-6">
+                {sizes.map((s) => (
+                    <button
+                        key={s}
+                        onClick={() => setSize(s)}
+                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${size === s ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                        aria-label={`Select size ${s}`}
+                    >
+                        <div className="bg-white rounded-full" style={{ width: s, height: s }} />
+                    </button>
+                ))}
+            </div>
+            <h3 className="text-sm font-semibold mb-4 text-gray-300">Tools</h3>
+            <div className="space-y-3">
+                <button
+                    onClick={() => setTool('pen')}
+                    className={`p-2 rounded-lg transition-colors ${tool === 'pen' ? 'bg-blue-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-gray-300'}`}
+                    title="Pen"
+                >
+                    <WhiteboardIcon className="w-6 h-6" />
+                </button>
+                <button
+                    onClick={() => setTool('eraser')}
+                    className={`p-2 rounded-lg transition-colors ${tool === 'eraser' ? 'bg-blue-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-gray-300'}`}
+                    title="Eraser"
+                >
+                    <EraserIcon className="w-6 h-6" />
+                </button>
+                <button
+                    onClick={clearCanvas}
+                    className="p-2 rounded-lg bg-gray-700 hover:bg-red-600 text-gray-300 hover:text-white transition-colors"
+                    title="Clear Canvas"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                </button>
+            </div>
+        </div>
+    );
+};
+
+// Sub-component for the team panel on the right
+const TeamAccessPanel: React.FC<{ teamMembers: TeamMember[] }> = ({ teamMembers }) => {
+    const [accessList, setAccessList] = useState<string[]>(['Lakshiya', 'Sravya']);
+    const drawingNow = ['Lakshiya', 'Sravya'];
+
+    const grantAccess = (name: string) => setAccessList(prev => [...prev, name]);
+    const revokeAccess = (name: string) => setAccessList(prev => prev.filter(n => n !== name));
+
+    const membersWithAccess = teamMembers.filter(m => accessList.includes(m.name));
+    const membersWithoutAccess = teamMembers.filter(m => !accessList.includes(m.name));
+
+    return (
+        <div className="w-72 bg-gray-800 rounded-lg p-4 flex flex-col shadow-lg">
+            <h2 className="text-lg font-bold mb-4">Team & Access</h2>
+            
+            <h3 className="text-sm font-semibold text-blue-400 mb-2">Drawing Now ({drawingNow.length})</h3>
+            <div className="space-y-2 mb-6">
+                {drawingNow.map(name => (
+                    <div key={name} className="text-gray-300">{name}</div>
+                ))}
+            </div>
+            
+            <div className="border-t border-gray-700 pt-4">
+                <h3 className="text-sm font-semibold text-gray-400 mb-3">Manage Access</h3>
+                <div className="space-y-2">
+                    {membersWithAccess.map(member => (
+                        <div key={member.id} className="flex items-center justify-between bg-gray-700 p-2 rounded-md">
+                            <span>{member.name}</span>
+                            <button onClick={() => revokeAccess(member.name)} className="text-xs bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-full">Revoke</button>
+                        </div>
+                    ))}
+                     {membersWithoutAccess.map(member => (
+                        <div key={member.id} className="flex items-center justify-between bg-gray-900/50 p-2 rounded-md">
+                            <span>{member.name}</span>
+                            <button onClick={() => grantAccess(member.name)} className="text-xs bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded-full">Grant</button>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
+interface WhiteboardProps {
+    teamMembers: TeamMember[];
+}
+
+export const Whiteboard: React.FC<WhiteboardProps> = ({ teamMembers }) => {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const contextRef = useRef<CanvasRenderingContext2D | null>(null);
+    const [isDrawing, setIsDrawing] = useState(false);
+    const [color, setColor] = useState('#FFFFFF');
+    const [size, setSize] = useState(5);
+    const [tool, setTool] = useState<'pen' | 'eraser'>('pen');
+
+    const setCanvasDimensions = useCallback(() => {
+        const canvas = canvasRef.current;
+        if (canvas) {
+            const { width, height } = canvas.getBoundingClientRect();
+            if (canvas.width !== width || canvas.height !== height) {
+                const context = canvas.getContext('2d');
+                canvas.width = width;
+                canvas.height = height;
+                if(context){
+                    context.lineCap = 'round';
+                    context.strokeStyle = color;
+                    context.lineWidth = size;
+                    contextRef.current = context;
+                }
+            }
+        }
+    }, [color, size]);
+
+
+    useEffect(() => {
+        setCanvasDimensions();
+        window.addEventListener('resize', setCanvasDimensions);
+        return () => window.removeEventListener('resize', setCanvasDimensions);
+    }, [setCanvasDimensions]);
+    
+    useEffect(() => {
+        if(contextRef.current){
+            contextRef.current.strokeStyle = color;
+            contextRef.current.lineWidth = size;
+            contextRef.current.globalCompositeOperation = tool === 'pen' ? 'source-over' : 'destination-out';
+        }
+    }, [color, size, tool]);
+
+
+    const getCoords = (event: React.MouseEvent | React.TouchEvent): { x: number, y: number } | null => {
+        const canvas = canvasRef.current;
+        if (!canvas) return null;
+        const rect = canvas.getBoundingClientRect();
+
+        let clientX, clientY;
+        if ('touches' in event.nativeEvent) {
+            if (event.nativeEvent.touches.length === 0) return null;
+            clientX = event.nativeEvent.touches[0].clientX;
+            clientY = event.nativeEvent.touches[0].clientY;
+        } else {
+            clientX = event.nativeEvent.clientX;
+            clientY = event.nativeEvent.clientY;
+        }
+
+        return {
+            x: clientX - rect.left,
+            y: clientY - rect.top
+        };
+    };
+
+    const startDrawing = (event: React.MouseEvent | React.TouchEvent) => {
+        const coords = getCoords(event);
+        if (!coords || !contextRef.current) return;
+        
+        contextRef.current.beginPath();
+        contextRef.current.moveTo(coords.x, coords.y);
+        setIsDrawing(true);
+    };
+
+    const finishDrawing = () => {
+        if (!contextRef.current) return;
+        contextRef.current.closePath();
+        setIsDrawing(false);
+    };
+
+    const draw = (event: React.MouseEvent | React.TouchEvent) => {
+        if (!isDrawing) return;
+        const coords = getCoords(event);
+        if (!coords || !contextRef.current) return;
+
+        contextRef.current.lineTo(coords.x, coords.y);
+        contextRef.current.stroke();
+    };
+    
+    const clearCanvas = () => {
+        const canvas = canvasRef.current;
+        const context = contextRef.current;
+        if(canvas && context) {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    }
+
+    return (
+        <div className="flex h-full flex-col">
+            <h1 className="text-3xl font-bold mb-4">Collaborative Whiteboard</h1>
+            <div className="flex-1 flex gap-4 min-h-0">
+                <Toolbar color={color} setColor={setColor} size={size} setSize={setSize} tool={tool} setTool={setTool} clearCanvas={clearCanvas}/>
+                <div className="flex-1 bg-gray-800 rounded-lg overflow-hidden shadow-inner">
+                    <canvas
+                        ref={canvasRef}
+                        className="w-full h-full bg-[#1F2937]"
+                        onMouseDown={startDrawing}
+                        onMouseUp={finishDrawing}
+                        onMouseMove={draw}
+                        onMouseLeave={finishDrawing}
+                        onTouchStart={startDrawing}
+                        onTouchEnd={finishDrawing}
+                        onTouchMove={draw}
+                    />
+                </div>
+                <TeamAccessPanel teamMembers={teamMembers} />
+            </div>
         </div>
     );
 };

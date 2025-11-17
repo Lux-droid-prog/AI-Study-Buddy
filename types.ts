@@ -10,6 +10,7 @@ export enum Page {
     Achievements = 'achievements',
     Performance = 'performance',
     FocusMode = 'focus-mode',
+    Whiteboard = 'whiteboard',
 }
 
 export interface Project {
